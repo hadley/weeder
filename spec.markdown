@@ -40,7 +40,7 @@ May need to trim out surround whitespace so latex doesn't add artifacts.
 
 no output <% %>
 --------------------
-Cut out of sources. R code goes in code.r. 
+Cut out of sources. R code goes in code.r.  Not cached.
 
 latex output <%= %>
 --------------------

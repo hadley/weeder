@@ -1,0 +1,24 @@
+#! /sw/bin/ruby
+
+require 'optparse'
+require 'weaver'
+
+clean = false
+opts = OptionParser.new do |opts|
+	opts.banner = "Usage: weaver [options] file-name"
+	opts.on("-c", "--clean", "Cleans out the existing cache") { clean = true}
+	opts.on("-h", "--help",  "This help page") { puts opts.to_s}
+end
+
+args = opts.parse(ARGV)
+if args.length != 1
+	opts.warn "Please specify one file to process"
+	exit
+end
+
+if !File.exists?(args[0])
+	opts.warn "File does not exist"
+end
+
+w = Weaver.new(args[0])
+w.process(clean)
