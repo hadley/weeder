@@ -20,9 +20,9 @@ class Block
 	def latex_code
 	end
 	
-	#Manipulate R code content to be prettier
+	#Manipulate R code content to be prettier and wrap in try block
 	def content
-		@content.gsub(/^\s*/, "")
+		@content.gsub(/^\s*/, "") 
 	end
 	
 	def filename

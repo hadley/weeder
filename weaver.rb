@@ -13,7 +13,7 @@ class Weaver
 	end
 	
 	def cache_path
-		file.parent + (file_name + ".wcache")
+		file.parent + ("." + file_name + ".wcache")
 	end
 	
 	def file_name
@@ -38,8 +38,12 @@ class Weaver
 
 		self.latex = file.read.gsub(block_re) do |match|
 			type, contents = $1, $2
-			b = block_type[type].new(contents, cache_path)
-			@blocks << b
+			if block_type.include? type
+				b = block_type[type].new(contents, cache_path)
+				@blocks << b
+			else 
+				$stderr.puts "Unrecognised block type #{type}"
+			end
 			"#<Block:#{b.object_id}>"
 		end
 	end
@@ -51,9 +55,20 @@ class Weaver
 		FileUtils.mkdir_p(cache_path)
 		File.open(cache_path + "code.r", "w") { |f| f.write r_code }
 		%x{r -q --no-save < #{cache_path + "code.r"} > #{cache_path + "r.log"} 2>&1}
+		
+		log = (cache_path + "r.log").readlines
+		if log[-1].chomp == "Execution halted" 
+			$stderr.puts "R error: "
+			$stderr.puts log[-5..-2]
+			$stderr.puts "see #{(cache_path + "r.log")} for more."
+			exit
+		end
+		
 		process_latex
-		File.open(file_name + ".tex", "w") { |f| f.write latex }	
-		%x{pdflatex  -interaction=nonstopmode -file-line-error-style -halt-on-error -output-directory=#{cache_path} #{file_name + ".tex"}}	
+		
+		latex_path = cache_path + (file_name + ".tex")
+		File.open(latex_path, "w") { |f| f.write latex }	
+		%x{pdflatex  -interaction=nonstopmode -file-line-error-style -halt-on-error -output-directory=#{cache_path} #{latex_path}}	
 		
 		if File.exists? cache_path + (file_name + ".pdf")
 			FileUtils.cp cache_path + (file_name + ".pdf"), file.parent + (file_name + ".pdf")
@@ -83,8 +98,8 @@ class Weaver
 			# from #{file.realpath} on #{Date.today} 
 			# ---------------------------------------------------------
 			
-			weaver.width <- 8
-			weaver.height <- 5
+			weaver.width <- 6
+			weaver.height <- 4
 			
 			setwd("#{file.parent.realpath}")
 			if (file.exists("#{r_cache}")) load("#{r_cache}")

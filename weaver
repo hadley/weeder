@@ -1,7 +1,8 @@
 #! /usr/bin/env ruby
 
-$: << "/Users/hadleywickham/projects/weaver/"
+$: << "/Users/hadley/documents/weaver/"
 require 'optparse'
+require 'pathname'
 require 'weaver'
 
 clean = false
@@ -18,9 +19,14 @@ if args.length != 1
 	exit
 end
 
-if !File.exists?(args[0])
+file = Pathname.new(args[0])
+if file.extname == ""
+	file = file.dirname + (file.basename.to_s + ".wvr")
+end
+
+if !File.exists?(file)
 	opts.warn "File does not exist"
 end
 
-w = Weaver.new(args[0])
+w = Weaver.new(file)
 w.process(clean)
