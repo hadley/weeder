@@ -1,6 +1,6 @@
-#! /sw/bin/ruby
+#! /usr/bin/env ruby
 
-$: << "/Users/hadley/documents/weaver/"
+$: << "/Users/hadleywickham/projects/weaver/"
 require 'optparse'
 require 'weaver'
 
