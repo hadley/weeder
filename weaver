@@ -1,5 +1,6 @@
 #! /sw/bin/ruby
 
+$: << "/Users/hadley/documents/weaver/"
 require 'optparse'
 require 'weaver'
 
@@ -13,6 +14,7 @@ end
 args = opts.parse(ARGV)
 if args.length != 1
 	opts.warn "Please specify one file to process"
+	puts opts.to_s
 	exit
 end
 

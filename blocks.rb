@@ -44,7 +44,7 @@ class LatexBlock < Block
 	end
 	
 	def latex_code
-		cache_file.read
+		cache_file.read if cached?
 	end
 end
 

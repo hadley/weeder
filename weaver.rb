@@ -13,7 +13,11 @@ class Weaver
 	end
 	
 	def cache_path
-		Pathname.new("weaver-cache")
+		file.parent + (file_name + ".wcache")
+	end
+	
+	def file_name
+		file.to_s[0 .. file.to_s.length - file.extname.length - 1]
 	end
 	
 	def initialize(file)
@@ -41,21 +45,19 @@ class Weaver
 	end
 	
 	def process(remove_cache = false)
-		full_cache_path = file.parent + cache_path
+		FileUtils.rm "output.pdf", :force => true
+		FileUtils.rm_r cache_path if remove_cache
 		
-		FileUtils.rm full_cache_path + "output.pdf", :force => true
-		FileUtils.rm_r full_cache_path if remove_cache
-		
-		FileUtils.mkdir_p(full_cache_path)
-		File.open(full_cache_path + "code.r", "w") { |f| f.write r_code }
-		%x{r -q --no-save < weaver-cache/code.r > weaver-cache/r.log 2>&1}
+		FileUtils.mkdir_p(cache_path)
+		File.open(cache_path + "code.r", "w") { |f| f.write r_code }
+		%x{r -q --no-save < #{cache_path + "code.r"} > #{cache_path + "r.log"} 2>&1}
 		process_latex
-		File.open(full_cache_path + "output.tex", "w") { |f| f.write latex }	
-		%x{pdflatex  -interaction=nonstopmode -file-line-error-style    %{full_cache_path + "output.tex"}}	
+		File.open(file_name + ".tex", "w") { |f| f.write latex }	
+		%x{pdflatex  -interaction=nonstopmode -file-line-error-style -halt-on-error -output-directory=#{cache_path} #{file_name + ".tex"}}	
 		
-		if File.exists? full_cache_path + "output.pdf"
-			FileUtils.cp full_cache_path + "output.pdf", file.parent + "output.pdf"
-			`open %{file.parent + "output.pdf"}`
+		if File.exists? cache_path + (file_name + ".pdf")
+			FileUtils.cp cache_path + (file_name + ".pdf"), file.parent + (file_name + ".pdf")
+			`open #{file_name + ".pdf"}`
 		end
 		
 	end
@@ -68,7 +70,7 @@ class Weaver
 	end
 	
 	def r_cache
-		(file.parent + cache_path + "cache.rdata")
+		cache_path + "cache.rdata"
 	end
 	
 	def r_code
