@@ -2,8 +2,6 @@ require 'pathname'
 require 'Date'
 require 'FileUtils'
 
-
-
 class Block
 	attr_accessor :content, :cache_path
 	
@@ -20,7 +18,7 @@ class Block
 	def latex_code
 	end
 	
-	#Manipulate R code content to be prettier and wrap in try block
+	#Manipulate R code content to be prettier
 	def content
 		@content.gsub(/^\s*/, "") 
 	end
@@ -65,5 +63,4 @@ class GraphicBlock < Block
 	def latex_code
 		"\\includegraphics{#{cache_file}}"
 	end
-	
 end

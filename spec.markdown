@@ -1,18 +1,18 @@
 Weaver
 ========================
 
-A program for inserting R code into latex (and later html files).  Similar to Sweave, but written in Ruby so as to be easier to maintain (Ruby's text processing features are more powerful) and provide caching functionality that Sweave doesn't.
+A program for inserting R code into latex.  Similar to Sweave, but written in Ruby so as to be easier to maintain (Ruby's text processing features are more powerful) and provide caching functionality that Sweave doesn't.
 
 Caching
 ------------------------
 
-Should be possible to run only code that has changed since the last run. Two attacks:
+Should be possible to run only code that has changed since the last run. Two components:
 
   * load rdata.weave at start of each run, and save workspace into rdata.weave when done
   * hash each block to check for changes, only rerun that block if code has changes
     * hash also used to name sink and graphics files
 
-All cached files stored in file-name.weave/
+All cached files stored in .file-name.wvr/
 
 Command-line use
 ------------------------
@@ -34,26 +34,28 @@ Types of blocks:
  * latex output - output from R functions is inserted into latex document
  * grapic output - R graphic output redirected to a physical graphics device
 
-Also need some way of setting various options - eg. width, height etc.  Could probably do with a bit of R code eg. `<% weaver.width <- 5 %>` and my R code just checks before assigning defaults.
+% run
+% no output
+% Cut out of sources. R code goes in code.r.  Not cached by default.
+% Start with cache to enforce caching
 
-May need to trim out surround whitespace so latex doesn't add artifacts.
+% insert
+% latex output
+% Need to wrap around with calls to sink(hash.txt)
 
-no output <% %>
---------------------
-Cut out of sources. R code goes in code.r.  Not cached.
+% graphic(width=4, height=10)
+% graphic output
+% May be cached.
+% Need to wrap lattice graph calls with print, and wrap around with calls to pdf(hash.pdf).
 
-latex output <%= %>
---------------------
-Need to wrap around with calls to sink (hash.txt)
+% verbatim
+% r code output
+% Should look like you had entered it into the r console - with R code and output interweaved.  
+% Save into hash.txt.   Will probably need to use source.mvb from the mvbutils package.
 
-graphic output <%=g %>
---------------------
-May be cached.
-Need to wrap lattice graph calls with print, and wrap around with calls to postscript (hash.ps).
+In line code can be inserted with:
 
-r code output <%=r %>
----------------------
-Should look like you had entered it into the r console - with R code and output interweaved.  Save into hash.txt.   Will probably need to use source.mvb from the mvbutils package.
+
 
 Autobuilt R code
 ========================
