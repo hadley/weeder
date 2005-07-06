@@ -131,5 +131,4 @@ LATEX
 			end
 		end
 	end
-	
 end
