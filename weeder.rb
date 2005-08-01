@@ -116,9 +116,9 @@ LATEX
 		
 		# Create R man pages for all files in a directory.
 		# Assumes that files laid out in typical r package fashion
-		def document_path!(path ="/Users/hadley/documents/reshape/reshape/R")
+		def document_path!(path ="/Users/hadley/documents/reshape/reshape/")
 			source = Pathname.new(path)
-			dest   = source.parent + "man"
+			dest   = source + "man"
 			r_files = Pathname.glob(source + "**/*.r")
 			r_files.each{|path| self.document_file!(path, dest)}
 		end
