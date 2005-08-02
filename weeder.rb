@@ -97,6 +97,7 @@ class R_Doc
 \\usage{#{@usage}}
 #{latex_param_arguments}
 #{latex_param("value")}
+\\details{#{details}}
 #{latex_param("seealso")}
 \\examples{}
 #{latex_param("keyword")}

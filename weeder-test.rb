@@ -21,7 +21,9 @@ class Weeder_Test < Test::Unit::TestCase #:nodoc:
 			# @seealso 
 			# @references
 			# @keyword
-			test <- function(a=3, b=c, ...) 
+			test <- function(a=3, b=c, ...) {}
+			# #examples go here
+			# print(a)
 			}#.gsub(/$\s+/, "")
 		
 		parsed = R_Doc.new_from_block(comment_block)
