@@ -63,6 +63,10 @@ class R_Doc
 		@function_params = function_params.gsub("\(.*\)","").split(/\s*,\s*/).map{|p| p.gsub(/\=.*$/,"").strip}
 	end
 	
+	def examples
+		block.split("\n").select{|l| l =~ /^\s*#X/}.map{|l| l.gsub(/^\s*#X\s*/, "")}.join("\n")
+	end
+
 	def latex_param_alias
 		params["alias"].map{|p| "\\alias{#{p}}"}.join("\n")
 	end
@@ -99,7 +103,7 @@ class R_Doc
 #{latex_param("value")}
 \\details{#{details}}
 #{latex_param("seealso")}
-\\examples{}
+\\examples{#{examples}}
 #{latex_param("keyword")}
 LATEX
 	end	
