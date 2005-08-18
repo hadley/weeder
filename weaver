@@ -8,8 +8,7 @@ require 'weaver'
 clean = false
 opts = OptionParser.new do |opts|
 	opts.banner = "Usage: weaver [options] file-name"
-	opts.on("-c", "--clean", "Cleans out the existing cache") { clean = true}
-	opts.on("-h", "--help",  "This help page") { puts opts.to_s}
+	opts.on_tails("-h", "--help",  "This help page") { puts opts.to_s}
 end
 
 args = opts.parse(ARGV)
