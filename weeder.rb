@@ -58,7 +58,7 @@ class R_Doc
 	end
 	
 	def parse_function!
-		function_def, @name, function_params = /([a-z0-9_.]+)\s*<-\s*function\((.*?)\)/i.match(block).to_a
+		function_def, @name, function_params = /([a-z0-9_.]+)\s*<-\s*function\((.*)\)/i.match(block).to_a
 		@usage = "#{@name}(#{function_params})"
 		@function_params = function_params.gsub("\(.*\)","").split(/\s*,\s*/).map{|p| p.gsub(/\=.*$/,"").strip}
 	end

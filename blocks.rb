@@ -48,7 +48,7 @@ end
 
 class RBlock < LatexBlock
 	def latex_code
-		"\\begin{verbatim}\n" + cache_file.read + "\\end{verbatim}"
+		"\\begin{verbatim}\n" + content + "\n\n" + cache_file.read.gsub(/^ /m, "") + "\\end{verbatim}"
 	end
 end
 
