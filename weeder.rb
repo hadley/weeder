@@ -58,9 +58,9 @@ class R_Doc
 	end
 	
 	def parse_function!
-		function_def, @name, function_params = /([a-z0-9_.]+)\s*<-\s*function\((.*)\)/i.match(block).to_a
-		@usage = "#{@name}(#{function_params})"
-		@function_params = function_params.gsub("\(.*\)","").split(/\s*,\s*/).map{|p| p.gsub(/\=.*$/,"").strip}
+		function_def, @name, function_params = /([a-z0-9_.]+)\s*<-\s*function(\((.|\n)*\))/i.match(block).to_a
+		@usage = "#{@name}(#{matching_parens(function_params)})"
+		@function_params = matching_parens(function_params).gsub(/\(.*?\)/,"").split(/\s*,\s*/).map{|p| p.gsub(/\=.*$/,"").strip}
 	end
 	
 	def examples
@@ -136,4 +136,22 @@ LATEX
 			end
 		end
 	end
+end
+
+def paren_value(c)
+  if c == "("
+    1
+  elsif c == ")"
+    -1
+  else
+    0
+  end
+end
+
+def matching_parens(string)
+  y = 0
+  cumsum = string.split("").map{|c| paren_value(c)}.map {|x| y +=x}
+  first = cumsum.index(1)
+  last = cumsum[first..string.length].index(0) + first
+  string[(first+1)..(last-1)]
 end
