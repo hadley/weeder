@@ -8,7 +8,7 @@ class R_Doc
 
 	# Name of documentation file
 	def filename 
-		name + ".rd"
+		name.gsub(/[^a-zA-Z\->\[]+/, "-").gsub(/-$/, "").gsub(/^-/, "") + ".rd"
 	end
 	
 	# Assign block to class and automatically parse
@@ -58,7 +58,7 @@ class R_Doc
 	end
 	
 	def parse_function!
-		function_def, @name, function_params = /([a-z0-9_.]+)\s*<-\s*function(\((.|\n)*\))/i.match(block).to_a
+		function_def, @name, function_params = /([a-z0-9_."]+)\s*<-\s*function(\((.|\n)*\))/i.match(block).to_a
 		@usage = "#{@name}(#{matching_parens(function_params)})"
 		@function_params = matching_parens(function_params).gsub(/\(.*?\)/,"").split(/\s*,\s*/).map{|p| p.gsub(/\=.*$/,"").strip}
 	end
@@ -124,16 +124,23 @@ LATEX
 		def document_path!(path ="/Users/hadley/documents/reshape/reshape/")
 			source = Pathname.new(path)
 			dest   = source + "man"
-			r_files = Pathname.glob(source + "**/*.r")
-			r_files.each{|path| self.document_file!(path, dest)}
+			r_files = Pathname.glob(source + "*/*.r")
+			r_files.each do |path| 
+			  self.document_file!(path, dest)
+			end
 		end
 		
 		# Document all functions in a file
 		def document_file!(path, dest)
 			file = Pathname.new(path)
 			file.read.gsub(/(^#.*\n)+.*<-\s*function\(.*\)/) do |match|
-				R_Doc.new_from_block(match).create_latex!(dest)
-			end
+  		  begin
+  				R_Doc.new_from_block(match).create_latex!(dest)
+  			rescue 
+  			  puts "Could not parse " + path
+  			  puts match + "\n\n"
+  			end
+  		end
 		end
 	end
 end
