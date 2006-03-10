@@ -6,9 +6,13 @@ class R_Doc
 	attr_accessor :block, :params, :function_params
 	attr_reader :name, :title, :description, :usage
 
+  def name
+    @name.gsub(/"/, "")
+  end
+    
 	# Name of documentation file
 	def filename 
-		name.gsub(/[^a-zA-Z\->\[]+/, "-").gsub(/-$/, "").gsub(/^-/, "") + ".rd"
+		name.gsub(/\[<-/, "-set-").gsub(/\[/,"-get-").gsub(/[^a-zA-Z\->]+/, "-").gsub(/-$/, "").gsub(/^-/, "") + ".rd"
 	end
 	
 	# Assign block to class and automatically parse
@@ -58,7 +62,7 @@ class R_Doc
 	end
 	
 	def parse_function!
-		function_def, @name, function_params = /([a-z0-9_."]+)\s*<-\s*function(\((.|\n)*\))/i.match(block).to_a
+		function_def, @name, function_params = /([a-z0-9_\[."<\-]+)\s*<-\s*function(\((.|\n)*\))/i.match(block).to_a
 		@usage = "#{@name}(#{matching_parens(function_params)})"
 		@function_params = matching_parens(function_params).gsub(/\(.*?\)/,"").split(/\s*,\s*/).map{|p| p.gsub(/\=.*$/,"").strip}
 	end
@@ -88,6 +92,12 @@ class R_Doc
 		end
 	end
 	
+	def keywords 
+		params = @params["keyword"]
+		return nil if params.length == 0
+	  params.map{|p| "\\keyword{#{p}}"}.join("\n")
+	end
+	
 	def latex_output
 		<<LATEX
 \\name{#{@name}}
@@ -104,7 +114,7 @@ class R_Doc
 \\details{#{details}}
 #{latex_param("seealso")}
 \\examples{#{examples}}
-#{latex_param("keyword")}
+#{keywords}
 LATEX
 	end	
 	
