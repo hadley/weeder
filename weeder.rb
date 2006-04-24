@@ -12,7 +12,7 @@ class R_Doc
     
 	# Name of documentation file
 	def filename 
-		name.gsub(/\[<-/, "-set-").gsub(/\[/,"-get-").gsub(/[^a-zA-Z\->]+/, "-").gsub(/-$/, "").gsub(/^-/, "") + ".rd"
+		name.gsub(/\[<-/, "-set-").gsub(/\[/,"-get-").gsub(/[^a-zA-Z\->]+/, "-").gsub(/-$/, "").gsub(/^-/, "") + "-" + name.hash.to_s(36)[1..2] + ".rd"
 	end
 	
 	# Assign block to class and automatically parse
@@ -62,7 +62,7 @@ class R_Doc
 	end
 	
 	def parse_function!
-		function_def, @name, function_params = /([a-z0-9_\[."<\-]+)\s*<-\s*function(\((.|\n)*\))/i.match(block).to_a
+		function_def, @name, function_params = /([a-z0-9_$\[."<\-]+)\s*<-\s*function(\((.|\n)*\))/i.match(block).to_a
 		@usage = "#{@name}(#{matching_parens(function_params)})"
 		@function_params = matching_parens(function_params).gsub(/\(.*?\)/,"").split(/\s*,\s*/).map{|p| p.gsub(/\=.*$/,"").strip}
 	end
@@ -146,9 +146,9 @@ LATEX
 			file.read.gsub(/(^#.*\n)+.*<-\s*function\(.*\)/) do |match|
   		  begin
   				R_Doc.new_from_block(match).create_latex!(dest)
-  			rescue 
-  			  puts "Could not parse " + path
-  			  puts match + "\n\n"
+#   			rescue 
+#   			  puts "Could not parse " + path
+#   			  puts match + "\n\n"
   			end
   		end
 		end
