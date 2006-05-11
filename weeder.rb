@@ -143,7 +143,7 @@ LATEX
 		# Document all functions in a file
 		def document_file!(path, dest)
 			file = Pathname.new(path)
-			file.read.gsub(/(^#.*\n)+.*<-\s*function\(.*\)/) do |match|
+			file.read.gsub(/(^#.*\n)+[^#]*<-\s*function\(.*\)/) do |match|
   		  begin
   				R_Doc.new_from_block(match).create_latex!(dest)
 #   			rescue 
