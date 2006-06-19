@@ -7,22 +7,19 @@ def build_package(name, repos = "~/ggobi/web/v2/r")
 
 	`R CMD build --binary #{name}`
 	macname = Dir["*powerpc-apple-darwin*.tar.gz"].to_s
-	#`mv #{macname} #{fullname}.tgz`
+	`mv #{macname} #{fullname}.tgz`
 
 	if (!File.exists?("#{name}/src"))
 		curdir = `pwd`.chomp
 		`R CMD install #{name}`
-		`cd ~/library/R/library/`
-		`zip -r9X #{name} #{name}`
-		`mv #{name}.zip #{curdir}/#{fullname}.zip`
-		`cd #{curdir}`
+		`cd ~/library/R/library/; zip -r9X #{name} #{name}; mv #{name}.zip #{curdir}/#{fullname}.zip`
 	end
 
 
 	if repos
-		`mv #{fullname}.zip     #{repos}/bin/windows/contrib/2.3/`
-		`mv #{macname}          #{repos}/bin/macosx/powerpc/contrib/2.3/`
-		`mv #{fullname}.tar.gz  #{repos}/src/contrib/`
+		`mv #{fullname}.zip #{repos}/bin/windows/contrib/2.3/`
+		`mv #{fullname}.tgz  #{repos}/bin/macosx/powerpc/contrib/2.3/`
+	 	`mv #{fullname}.tar.gz  #{repos}/src/contrib/`
 	
 		`cd #{repos}/`
 	end
