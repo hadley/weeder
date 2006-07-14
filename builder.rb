@@ -1,6 +1,3 @@
-
-name = "ggplot"
-
 def build_package(name, repos = "~/ggobi/web/v2/r")
 	`R CMD build #{name}`
 	fullname = Dir["#{name}*.tar.gz"].to_s.gsub(".tar.gz", "")
