@@ -1,9 +1,11 @@
-def build_package(name, repos = "~/ggobi/web/v2/r")
+def build_package(name, repos = "~/ggobi/web/v2/r") 
+  name = name.gsub(/\/$/, "")
 	`R CMD build #{name}`
 	fullname = Dir["#{name}*.tar.gz"].to_s.gsub(".tar.gz", "")
 
 	`R CMD build --binary #{name}`
-	macname = Dir["*powerpc-apple-darwin*.tar.gz"].to_s
+	macname = Dir["#{name}*i386-apple-darwin*.tar.gz"].to_s
+	
 	`mv #{macname} #{fullname}.tgz`
 
 	if (!File.exists?("#{name}/src"))
@@ -12,10 +14,10 @@ def build_package(name, repos = "~/ggobi/web/v2/r")
 		`cd ~/library/R/library/; zip -r9X #{name} #{name}; mv #{name}.zip #{curdir}/#{fullname}.zip`
 	end
 
-
 	if repos
-		`mv #{fullname}.zip #{repos}/bin/windows/contrib/2.3/`
-		`mv #{fullname}.tgz  #{repos}/bin/macosx/powerpc/contrib/2.3/`
+		`mv #{fullname}.zip #{repos}/bin/windows/contrib/2.4/`
+		`cp #{fullname}.tgz  #{repos}/bin/macosx/powerpc/contrib/2.4/`
+		`mv #{fullname}.tgz  #{repos}/bin/macosx/i386/contrib/2.4/`
 	 	`mv #{fullname}.tar.gz  #{repos}/src/contrib/`
 	
 		`cd #{repos}/`
