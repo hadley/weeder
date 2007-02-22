@@ -134,7 +134,8 @@ LATEX
 		def document_path!(path ="/Users/hadley/documents/reshape/reshape/")
 			source = Pathname.new(path)
 			dest   = source + "man"
-			r_files = Pathname.glob(source + "*/*.R") + Pathname.glob(source + "*/*.r")
+			r_files = Pathname.glob(source + "R/*.R") + Pathname.glob(source + "R/*.r")
+			puts r_files
 			r_files.each do |path| 
 			  self.document_file!(path, dest)
 			end
