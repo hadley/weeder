@@ -23,5 +23,5 @@ if !File.exists?(path)
 	opts.warn "Path does not exist"
 end
 
-#puts path
+puts path
 R_Doc.document_path! path

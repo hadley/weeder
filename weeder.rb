@@ -134,7 +134,7 @@ LATEX
 		def document_path!(path ="/Users/hadley/documents/reshape/reshape/")
 			source = Pathname.new(path)
 			dest   = source + "man"
-			r_files = Pathname.glob(source + "*/*.r")
+			r_files = Pathname.glob(source + "*/*.R") + Pathname.glob(source + "*/*.r")
 			r_files.each do |path| 
 			  self.document_file!(path, dest)
 			end
@@ -146,9 +146,9 @@ LATEX
 			file.read.gsub(/(^#.*\n)+[^#]*<-\s*function\(.*\)/) do |match|
   		  begin
   				R_Doc.new_from_block(match).create_latex!(dest)
-#   			rescue 
-#   			  puts "Could not parse " + path
-#   			  puts match + "\n\n"
+   			rescue 
+   			  puts "Could not parse " + path
+   			  puts match + "\n\n"
   			end
   		end
 		end
