@@ -119,6 +119,7 @@ LATEX
 	end	
 	
 	def create_latex!(path)
+	  puts @name
 		File.open(path + filename, "w") { |f| f.write latex_output }
 	end
 	
@@ -135,7 +136,7 @@ LATEX
 			source = Pathname.new(path)
 			dest   = source + "man"
 			r_files = Pathname.glob(source + "R/*.R") + Pathname.glob(source + "R/*.r")
-			puts r_files
+			# puts r_files
 			r_files.each do |path| 
 			  self.document_file!(path, dest)
 			end
@@ -144,7 +145,7 @@ LATEX
 		# Document all functions in a file
 		def document_file!(path, dest)
 			file = Pathname.new(path)
-			file.read.gsub(/(^#.*\n)+[^#]*<-\s*function(\(\)|\([^.].*\))/) do |match|
+			file.read.gsub(/(^#.*\n)+[^# ]+.*<-\s*function\((.*)\)/) do |match|
   		  begin
   				R_Doc.new_from_block(match).create_latex!(dest)
    			rescue 
