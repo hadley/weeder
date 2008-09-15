@@ -62,7 +62,7 @@ class R_Doc
 	end
 	
 	def parse_function!
-		function_def, @name, function_params = /([a-z0-9_$\[."<\-]+)\s*<-\s*function(\((.|\n)*\))/i.match(block).to_a
+		function_def, @name, function_params = /^([a-z0-9_+\[$."<\-]+)\s*<-\s*function(\((.|\n)*\))/i.match(block).to_a
 		@usage = "#{@name}(#{matching_parens(function_params)})"
 		@function_params = matching_parens(function_params).gsub(/\(.*?\)/,"").split(/\s*,\s*/).map{|p| p.gsub(/\=.*$/,"").strip}
 	end
@@ -145,7 +145,7 @@ LATEX
 		# Document all functions in a file
 		def document_file!(path, dest)
 			file = Pathname.new(path)
-			file.read.gsub(/(^#.*\n)+[^# ]+.*<-\s*function\((.*)\)/) do |match|
+			file.read.gsub(/(^#.*\n)+[^#\n ]+.*<-\s*function\((.*)\)/) do |match|
   		  begin
   				R_Doc.new_from_block(match).create_latex!(dest)
    			rescue 
