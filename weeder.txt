@@ -8,7 +8,7 @@ How it works
 
 It parses all r files in the given directory, builds up the documentation latex files and then outputs to ../man/.
 
-	/($#.*^)+ ([a-z0-9_.]+)\s*<-\s*function\((.*?)\).*$}($#.*^)+/
+  /($#.*^)+ ([a-z0-9_.]+)\s*<-\s*function\((.*?)\).*$}($#.*^)+/
 
 Format
 ------
@@ -28,7 +28,7 @@ Format
 # @references
 # @keyword
 name <- function (arg1, arg2=3, ...) {
-	
+  
 }
 # #examples go here
 # print("hi!")
